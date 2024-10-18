@@ -1,0 +1,26 @@
+rootProject.name = 'tools'
+
+//dependencyResolutionManagement {
+//    versionCatalogs {
+//        libs {
+////            version('jackson', '2.17.0')
+////
+////            library('jakson.yaml', 'com.fasterxml.jackson.dataformat', 'jackson-dataformat-yaml').versionRef('jackson')
+////            library('jakson.jsr310', 'com.fasterxml.jackson.datatype', 'jackson-datatype-jsr310').versionRef('jackson')
+////            library('jakson.databind', 'com.fasterxml.jackson.core', 'jackson-databind').versionRef('jackson')
+////            library('jakson.core', 'com.fasterxml.jackson.core', 'jackson-core').versionRef('jackson')
+////            library('jakson.annotations', 'com.fasterxml.jackson.core', 'jackson-annotations').versionRef('jackson')
+////
+////
+////            bundle("jakson", ['jakson.core', 'jakson.databind', 'jakson.annotations'])
+////            bundle("jakson.yaml", ['jakson.yaml', 'jakson.jsr310'])
+//        }
+//    }
+//}
+
+include 'collection'
+include 'collection:core'
+findProject(':collection:core')?.name = 'core'
+include 'collection:st'
+findProject(':collection:st')?.name = 'static'
+
