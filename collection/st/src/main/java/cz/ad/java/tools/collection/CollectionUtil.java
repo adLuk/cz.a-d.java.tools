@@ -95,8 +95,8 @@ public class CollectionUtil {
      * @param <V>        type fo value.
      * @return provided collection ot initialized by ArrayList with added value.
      */
-    public static <V> List<V> addArrayList(List<V> collection, V value) {
-        return add(collection, ArrayList::new, value);
+    public static <V> List<V> addList(List<V> collection, V value) {
+        return CollectionAddUtils.DEFAULT_INSTANCE.addList(collection, value);
     }
 
     /**
@@ -107,8 +107,8 @@ public class CollectionUtil {
      * @param <V>        type fo value.
      * @return provided collection ot initialized by HashSet with added value.
      */
-    public static <V> Set<V> addHashSet(Set<V> collection, V value) {
-        return add(collection, HashSet::new, value);
+    public static <V> Set<V> addSet(Set<V> collection, V value) {
+        return CollectionUtils.DEFAULT_INSTANCE.addSet(collection, value);
     }
 
     /**
@@ -137,10 +137,10 @@ public class CollectionUtil {
      * @return original destination collection or initialized new collection with added provided values if source was
      *         not empty, otherwise collection value.
      */
-    public static <D extends List<V>, S extends Collection<V>, V> List<V> addAllArrayList(
+    public static <D extends List<V>, S extends Collection<V>, V> List<V> addAllList(
             D collection, S values
     ) {
-        return addAll(collection, ArrayList::new, values);
+        return CollectionUtils.DEFAULT_INSTANCE.addAllList(collection, values);
     }
 
     /**
@@ -155,10 +155,10 @@ public class CollectionUtil {
      * @return original destination collection or initialized new collection with added provided values if source was
      *         not empty, otherwise collection value.
      */
-    public static <D extends Set<V>, S extends Collection<V>, V> Set<V> addAllHashSet(
+    public static <D extends Set<V>, S extends Collection<V>, V> Set<V> addAllSet(
             D collection, S values
     ) {
-        return addAll(collection, HashSet::new, values);
+        return CollectionUtils.DEFAULT_INSTANCE.addAllSet(collection, values);
     }
 
     /**
@@ -190,8 +190,8 @@ public class CollectionUtil {
      * @param <V>   type of value.
      * @return provided map or initialized as HashMap with added key and value.
      */
-    public static <K, V> Map<K, V> putHashMap(Map<K, V> map, K key, V value) {
-        return put(map, HashMap::new, key, value);
+    public static <K, V> Map<K, V> putMap(Map<K, V> map, K key, V value) {
+        return CollectionUtils.DEFAULT_INSTANCE.putMap(map, key, value);
     }
 
     /**
@@ -225,6 +225,22 @@ public class CollectionUtil {
      */
     public static <T extends Map<K, V>, S extends Map<K, V>, K, V> T putAll(T target, Supplier<T> init, S source) {
         return CollectionUtils.DEFAULT_INSTANCE.putAll(target, init, source);
+    }
+
+    /**
+     * Put safely values from source map into target map and when target map is null new instance is created by provided
+     * supplier. When source map has no records target parameter is returned without change.
+     *
+     * @param target map for records provided in values map.
+     * @param source map with source data
+     * @param <S>    type of source map.
+     * @param <K>    type of key.
+     * @param <V>    type of value.
+     * @return target map or initialized new map with all values from provided values map if it was not empty.
+     *         Otherwise, value of target parameter without change.
+     */
+    public static <S extends Map<K, V>, K, V> Map<K, V> putAllMap(Map<K, V> target, S source){
+        return CollectionUtils.DEFAULT_INSTANCE.putAllMap(target, source);
     }
 
     /**
@@ -386,6 +402,16 @@ public class CollectionUtil {
         return CollectionUtils.DEFAULT_INSTANCE.removeAll(map, remove);
     }
 
+    /**
+     * Remove all matching keys from target map located in source map.
+     *
+     * @param target for modification by removal.
+     * @param source map with key pairs to be removed from map.
+     * @return m true when map is modified by removal, otherwise false.
+     */
+    public static <T extends Map<K, V>, S extends Set<K>, K, V> boolean removeAll(T target, S source){
+        return CollectionUtils.DEFAULT_INSTANCE.removeAll(target, source);
+    }
     /**
      * Retain all values existing in collection and provided values.
      *

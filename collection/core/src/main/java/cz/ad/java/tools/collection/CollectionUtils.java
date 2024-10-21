@@ -13,14 +13,14 @@ public interface CollectionUtils {
     /**
      * Provide single shared default instance of collection utils.
      */
-    CollectionUtils DEFAULT_INSTANCE = instance();
+    CollectionAddUtils DEFAULT_INSTANCE = instance();
 
     /**
      * Create new instance of collection utils.
      *
      * @return new instance of collection utils.
      */
-    static CollectionUtils instance() {
+    static CollectionAddUtils instance() {
         return new DefaultCollectionUtils();
     }
 
@@ -132,7 +132,8 @@ public interface CollectionUtils {
      * @param target map for records provided in values map.
      * @param init   supplier to provided new instance in case when provided map is null.
      * @param source map with source data
-     * @param <T>    type of map.
+     * @param <T>    type of target map.
+     * @param <S>    type of source map.
      * @param <K>    type of key.
      * @param <V>    type of value.
      * @return target map or initialized new map with all values from provided values map if it was not empty.

@@ -9,7 +9,7 @@ import java.util.function.Supplier;
  * Implement interface for basic operation with collection supporting null instances of used collection in operation and
  * provides basic validation and operation with collection including initialization.
  */
-public class DefaultCollectionUtils implements CollectionUtils {
+public class DefaultCollectionUtils implements CollectionAddUtils {
     /**
      * Verify if collection has no records.
      *
@@ -227,8 +227,8 @@ public class DefaultCollectionUtils implements CollectionUtils {
         boolean retValue = false;
         if (isNotEmpty(source) && isNotEmpty(target)) {
             retValue = true;
-            for (Map.Entry<K, V> entry : target.entrySet()) {
-                if (source.containsKey(entry.getKey())) {
+            for (Map.Entry<K, V> entry : source.entrySet()) {
+                if (target.containsKey(entry.getKey())) {
                     V value = target.get(entry.getKey());
                     if (!value.equals(entry.getValue())) {
                         retValue = false;
@@ -256,7 +256,7 @@ public class DefaultCollectionUtils implements CollectionUtils {
         boolean retValue = false;
         if (isNotEmpty(source) && isNotEmpty(target)) {
             retValue = true;
-            for (K key : target.keySet()) {
+            for (K key : source) {
                 if (!target.containsKey(key)) {
                     retValue = false;
                     break;
