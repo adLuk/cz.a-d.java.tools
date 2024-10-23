@@ -23,4 +23,6 @@ include 'collection:core'
 findProject(':collection:core')?.name = 'core'
 include 'collection:st'
 findProject(':collection:st')?.name = 'static'
+include 'collection:bean'
+findProject(':collection:bean')?.name = 'bean'
 

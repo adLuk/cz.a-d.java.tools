@@ -22,7 +22,7 @@ class CollectionUtilTest {
     @Test
     void isEmpty() {
         Collection<Integer> collection = null;
-        boolean result =CollectionUtil.isEmpty(collection);
+        boolean result = CollectionUtil.isEmpty(collection);
         assertTrue(result);
         collection = new ArrayList<>();
         result = CollectionUtil.isEmpty(collection);
@@ -56,7 +56,7 @@ class CollectionUtilTest {
     @Test
     void isNotEmpty() {
         Collection<Integer> collection = null;
-        boolean result =CollectionUtil.isNotEmpty(collection);
+        boolean result = CollectionUtil.isNotEmpty(collection);
         assertFalse(result);
         collection = new ArrayList<>();
         result = CollectionUtil.isNotEmpty(collection);
@@ -121,7 +121,7 @@ class CollectionUtilTest {
 
     @Test
     void add() {
-        Collection<Integer> result = CollectionUtil.add(null,ArrayList::new, null);
+        Collection<Integer> result = CollectionUtil.add(null, ArrayList::new, null);
         assertNotNull(result);
         assertFalse(result.isEmpty());
         assertEquals(1, result.size());
@@ -189,7 +189,7 @@ class CollectionUtilTest {
 
     @Test
     void put() {
-        Map<Integer, Integer> result = CollectionUtil.put(null,HashMap::new, null, null);
+        Map<Integer, Integer> result = CollectionUtil.put(null, HashMap::new, null, null);
         assertNotNull(result);
         assertFalse(result.isEmpty());
         assertEquals(1, result.size());
@@ -202,11 +202,11 @@ class CollectionUtilTest {
         Map<Integer, Integer> result = CollectionUtil.putAll(null, HashMap::new, null);
         assertNull(result);
         Map<Integer, Integer> map = new HashMap<>();
-        result= CollectionUtil.putAll(result, HashMap::new, map);
+        result = CollectionUtil.putAll(result, HashMap::new, map);
         assertNull(result);
 
         map.put(1, 1);
-        result= CollectionUtil.putAll(result, HashMap::new, map);
+        result = CollectionUtil.putAll(result, HashMap::new, map);
         assertNotNull(result);
         assertFalse(result.isEmpty());
         assertEquals(1, result.size());
@@ -215,7 +215,7 @@ class CollectionUtilTest {
     }
 
     @Test
-    void putAllMap(){
+    void putAllMap() {
         Map<Integer, Integer> result = CollectionUtil.putAllMap(null, null);
         assertNull(result);
 

@@ -6,7 +6,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CollectionAddUtilsTest {
 
@@ -54,7 +58,7 @@ class CollectionAddUtilsTest {
     void putMap() {
         Integer key = null;
         Integer value = null;
-        Map<Integer, Integer> result = CollectionAddUtils.DEFAULT_INSTANCE.putMap(null,key, value);
+        Map<Integer, Integer> result = CollectionAddUtils.DEFAULT_INSTANCE.putMap(null, key, value);
         assertNotNull(result);
         assertFalse(result.isEmpty());
         assertEquals(1, result.size());
@@ -67,7 +71,7 @@ class CollectionAddUtilsTest {
         Map<Integer, Integer> result = CollectionAddUtils.DEFAULT_INSTANCE.putAllMap(null, null);
         assertNull(result);
 
-        Map<Integer, Integer> source = Map.of(1,2,3,4);
+        Map<Integer, Integer> source = Map.of(1, 2, 3, 4);
         result = CollectionAddUtils.DEFAULT_INSTANCE.putAllMap(null, source);
         assertNotNull(result);
         assertFalse(result.isEmpty());

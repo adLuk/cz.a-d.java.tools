@@ -229,7 +229,7 @@ public interface CollectionUtils {
     <C extends Collection<V>, V> boolean remove(C collection, V value);
 
     /**
-     * Remove key and value map entry from provided collection and return true in case when value was removed.
+     * Remove key and value map entry from provided map and return true in case when value was removed.
      *
      * @param map   used to remove data.
      * @param key   key part of entry to be removed from map.

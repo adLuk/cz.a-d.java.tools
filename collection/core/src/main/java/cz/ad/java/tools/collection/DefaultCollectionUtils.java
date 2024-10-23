@@ -382,4 +382,9 @@ public class DefaultCollectionUtils implements CollectionAddUtils {
         }
         return retValue;
     }
+
+    @Override
+    public String toString() {
+        return "DefaultCollectionUtils{}";
+    }
 }

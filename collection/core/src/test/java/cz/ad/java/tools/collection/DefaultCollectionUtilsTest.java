@@ -440,7 +440,7 @@ class DefaultCollectionUtilsTest {
         retain = instance.retainAll(collection, source);
         assertFalse(retain);
 
-        collection = new ArrayList<>(List.of(1, 2,3));
+        collection = new ArrayList<>(List.of(1, 2, 3));
         retain = instance.retainAll(collection, source);
         assertTrue(retain);
     }

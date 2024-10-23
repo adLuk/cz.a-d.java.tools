@@ -236,7 +236,7 @@ public class CollectionUtil {
      * @return target map or initialized new map with all values from provided values map if it was not empty.
      *         Otherwise, value of target parameter without change.
      */
-    public static <S extends Map<K, V>, K, V> Map<K, V> putAllMap(Map<K, V> target, S source){
+    public static <S extends Map<K, V>, K, V> Map<K, V> putAllMap(Map<K, V> target, S source) {
         return CollectionUtils.DEFAULT_INSTANCE.putAllMap(target, source);
     }
 
@@ -324,7 +324,7 @@ public class CollectionUtil {
      * @param <V>    type of value in map.
      * @return true in case when target contains all same key value pairs, otherwise false.
      */
-    public static <T extends Map<K, V>, S extends Set<K>, K, V> boolean containsAll(T target, S source){
+    public static <T extends Map<K, V>, S extends Set<K>, K, V> boolean containsAll(T target, S source) {
         return CollectionUtils.DEFAULT_INSTANCE.containsAll(target, source);
     }
 
@@ -406,9 +406,10 @@ public class CollectionUtil {
      * @param source map with key pairs to be removed from map.
      * @return m true when map is modified by removal, otherwise false.
      */
-    public static <T extends Map<K, V>, S extends Set<K>, K, V> boolean removeAll(T target, S source){
+    public static <T extends Map<K, V>, S extends Set<K>, K, V> boolean removeAll(T target, S source) {
         return CollectionUtils.DEFAULT_INSTANCE.removeAll(target, source);
     }
+
     /**
      * Retain all values existing in collection and provided values.
      *
@@ -421,5 +422,10 @@ public class CollectionUtil {
      */
     public static <S extends Collection<V>, D extends Collection<V>, V> boolean retainAll(S target, D values) {
         return CollectionUtils.DEFAULT_INSTANCE.retainAll(target, values);
+    }
+
+    @Override
+    public String toString() {
+        return "CollectionUtil{}";
     }
 }
