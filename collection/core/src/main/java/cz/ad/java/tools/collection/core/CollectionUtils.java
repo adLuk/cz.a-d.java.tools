@@ -1,4 +1,4 @@
-package cz.ad.java.tools.collection;
+package cz.ad.java.tools.collection.core;
 
 import java.util.Collection;
 import java.util.Map;

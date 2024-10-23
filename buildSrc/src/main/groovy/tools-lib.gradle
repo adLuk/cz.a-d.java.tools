@@ -14,3 +14,8 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+tasks.named('compileJava') {
+    // use the project's version or define one directly
+    options.javaModuleVersion = provider { version }
+}

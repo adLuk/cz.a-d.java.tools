@@ -1,4 +1,4 @@
-package cz.ad.java.tools.collection;
+package cz.ad.java.tools.collection.core;
 
 import java.util.ArrayList;
 import java.util.Collection;

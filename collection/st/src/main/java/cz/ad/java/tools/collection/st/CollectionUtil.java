@@ -1,4 +1,7 @@
-package cz.ad.java.tools.collection;
+package cz.ad.java.tools.collection.st;
+
+import cz.ad.java.tools.collection.core.CollectionAddUtils;
+import cz.ad.java.tools.collection.core.CollectionUtils;
 
 import java.util.Collection;
 import java.util.List;

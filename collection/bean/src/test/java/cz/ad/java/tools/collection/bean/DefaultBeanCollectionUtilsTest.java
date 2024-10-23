@@ -1,7 +1,7 @@
 package cz.ad.java.tools.collection.bean;
 
-import cz.ad.java.tools.collection.CollectionAddUtils;
-import cz.ad.java.tools.collection.CollectionUtils;
+import cz.ad.java.tools.collection.core.CollectionAddUtils;
+import cz.ad.java.tools.collection.core.CollectionUtils;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
