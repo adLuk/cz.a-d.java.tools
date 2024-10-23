@@ -1,19 +1,5 @@
 plugins {
-    id 'java'
+    id 'tools-lib'
 }
 
-group = 'cz.ad.java.tools'
-version = '1.0-SNAPSHOT'
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-}
-
-test {
-    useJUnitPlatform()
-}
+group = 'cz.ad.java.tools.collection.core'

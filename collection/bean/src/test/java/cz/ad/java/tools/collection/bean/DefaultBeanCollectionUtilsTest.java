@@ -348,7 +348,7 @@ class DefaultBeanCollectionUtilsTest {
 
         Set<Integer> set = new HashSet<>();
         map.clear();
-        ;
+
         containsAll = testesInstance.containsAll((Supplier<Map<Integer, Integer>>) null, set);
         assertFalse(containsAll);
 
