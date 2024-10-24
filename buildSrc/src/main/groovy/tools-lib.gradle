@@ -1,5 +1,7 @@
 plugins {
     id 'java-library'
+    id 'signing'
+    id 'maven-publish'
 }
 
 repositories {
@@ -18,4 +20,32 @@ test {
 tasks.named('compileJava') {
     // use the project's version or define one directly
     options.javaModuleVersion = provider { version }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            pom {
+                url = 'https://github.com/adLuk/cz.a-d.java.tools'
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'casper'
+                        name = 'Lukas Masek'
+                        email = 'lukas.masek@a-d.cz'
+                    }
+                }
+                scm {
+                    connection = 'https://github.com/adLuk/cz.a-d.java.tools.git'
+                    url = 'https://github.com/adLuk/cz.a-d.java.tools'
+                }
+            }
+            from components.java
+        }
+    }
 }

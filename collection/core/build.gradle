@@ -3,3 +3,15 @@ plugins {
 }
 
 group = 'cz.ad.java.tools.collection.core'
+version = '1.0-SNAPSHOT'
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            pom {
+                name = 'Java Collection tools core'
+                description = 'Collection tools library with basic collection operations.'
+            }
+        }
+    }
+}
