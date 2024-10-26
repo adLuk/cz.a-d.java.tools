@@ -11,6 +11,12 @@ import java.util.function.Supplier;
  */
 public class DefaultCollectionUtils implements CollectionAddUtils {
     /**
+     * Default non parametric constructor.
+     */
+    public DefaultCollectionUtils() {
+    }
+
+    /**
      * Verify if collection has no records.
      *
      * @param collection instance to be validated.

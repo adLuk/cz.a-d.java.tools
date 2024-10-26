@@ -22,9 +22,11 @@ public interface BeanCollectionUtils {
     /**
      * Create new instance of collection utils.
      *
+     * @param utils collection utils implementation used internally by bean variant. Must not be null.
      * @return new instance of collection utils.
+     * @throws IllegalArgumentException when collection utils instance provided as parameter is null.
      */
-    static BeanCollectionUtils instance(CollectionAddUtils utils) {
+    static BeanCollectionUtils instance(CollectionAddUtils utils) throws IllegalArgumentException {
         return new DefaultBeanCollectionUtils(utils);
     }
 

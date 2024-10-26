@@ -16,6 +16,12 @@ import java.util.function.Supplier;
 public class CollectionUtil {
 
     /**
+     * Static helper class should not be initialized.
+     */
+    protected CollectionUtil() {
+    }
+
+    /**
      * Verify if collection has no records.
      *
      * @param collection instance to be validated.
@@ -217,7 +223,8 @@ public class CollectionUtil {
      * @param target map for records provided in values map.
      * @param init   supplier to provided new instance in case when provided map is null.
      * @param source map with source data
-     * @param <T>    type of map.
+     * @param <T>    type of target map.
+     * @param <S>    type of source map.
      * @param <K>    type of key.
      * @param <V>    type of value.
      * @return target map or initialized new map with all values from provided values map if it was not empty.
@@ -407,6 +414,10 @@ public class CollectionUtil {
      *
      * @param target for modification by removal.
      * @param source map with key pairs to be removed from map.
+     * @param <T>    type of destination map.
+     * @param <S>    type of data source set.
+     * @param <K>    type of key.
+     * @param <V>    type of value.
      * @return m true when map is modified by removal, otherwise false.
      */
     public static <T extends Map<K, V>, S extends Set<K>, K, V> boolean removeAll(T target, S source) {
@@ -418,12 +429,12 @@ public class CollectionUtil {
      *
      * @param target collection to be modified.
      * @param values values to retain in original collection.
-     * @param <S>    type of modified collection
+     * @param <T>    type of modified collection
      * @param <D>    type of retain data collection
      * @param <V>    type of value in collections.
      * @return true if target collection was modified
      */
-    public static <S extends Collection<V>, D extends Collection<V>, V> boolean retainAll(S target, D values) {
+    public static <T extends Collection<V>, D extends Collection<V>, V> boolean retainAll(T target, D values) {
         return CollectionUtils.DEFAULT_INSTANCE.retainAll(target, values);
     }
 

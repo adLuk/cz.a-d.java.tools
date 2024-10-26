@@ -6,6 +6,7 @@ plugins {
 
 repositories {
     mavenCentral()
+
 }
 
 dependencies {
@@ -17,9 +18,18 @@ test {
     useJUnitPlatform()
 }
 
-tasks.named('compileJava') {
-    // use the project's version or define one directly
-    options.javaModuleVersion = provider { version }
+java {
+    withJavadocJar()
+    withSourcesJar()
+//    toolchain {
+//        languageVersion.set(JavaLanguageVersion.of("${jdkCompileVersion}"))
+//    }
+}
+
+javadoc {
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
 }
 
 publishing {
@@ -48,10 +58,21 @@ publishing {
             from components.java
         }
     }
+    repositories {
+        maven {
+            name = "OSSRH"
+             url = "https://s01.oss.sonatype.org/content/repositories/snapshots/" // this is the repo for snapshots
+//            url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/" // deploys to the staging repo in nexus
+            credentials {
+                // Create system environment variables with your token-username and token-password.
+                username = property('ossrh.token.username')
+                password = property('ossrh.token.password')
+            }
+        }
+    }
 }
 
 signing {
     useGpgCmd()
     sign publishing.publications
 }
-
