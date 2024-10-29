@@ -36,7 +36,7 @@ publishing {
 }
 
 multijar {
-    jdkArtifacts(9)
+    jdkArtifacts(8)
 }
 
 //tasks.register('compileJdk8', JavaCompile) {

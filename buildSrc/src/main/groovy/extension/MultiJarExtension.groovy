@@ -113,13 +113,15 @@ abstract class MultiJarExtension {
 
     protected TaskProvider setupJarBuild(String variantName, int version, Provider<JavaCompiler> targetCompiler){
         def sharedSourceSet = sourceSets.main.allSource
+
         // Define source set for selected language version to get tasks configured and created automatically.
         def langSourceSet = sourceSets.create(variantName) {
-            if(!JavaVersion.toVersion(version).isJava9Compatible()){
-                sharedSourceSet.exclude("module-info.java")
-            }
             it.java.srcDir(sharedSourceSet)
         }
+        if(!JavaVersion.toVersion(version).isJava9Compatible()){
+            langSourceSet.java.getFilter().exclude("**/module-info.java")
+        }
+
         // Use target compiler obtained by toolchain to compile java sources.
         tasks.named("compile"+ GUtil.toCamelCase(variantName)+"Java", JavaCompile) {
             it.getJavaCompiler().set(targetCompiler)
