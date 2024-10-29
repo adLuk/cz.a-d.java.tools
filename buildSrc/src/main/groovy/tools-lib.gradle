@@ -39,9 +39,9 @@ test {
 java {
     withJavadocJar()
     withSourcesJar()
-//    toolchain {
-//        languageVersion.set(JavaLanguageVersion.of("${jdkCompileVersion}"))
-//    }
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of("23"))
+    }
 }
 
 javadoc {
@@ -79,10 +79,11 @@ publishing {
     repositories {
         maven {
             name = "OSSRH"
-             url = "https://s01.oss.sonatype.org/content/repositories/snapshots/" // this is the repo for snapshots
+            url = "https://s01.oss.sonatype.org/content/repositories/snapshots/" // this is the repo for snapshots
 //            url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/" // deploys to the staging repo in nexus
             credentials {
-                // Create system environment variables with your token-username and token-password.
+                // Define this properties in gradle.properties located outside repository to prevent leaks of your
+                // credentials into repository.
                 username = property('ossrh.token.username')
                 password = property('ossrh.token.password')
             }

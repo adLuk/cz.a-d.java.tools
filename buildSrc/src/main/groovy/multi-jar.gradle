@@ -15,25 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 plugins {
-    // https://github.com/gradle/foojay-toolchains
-    id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
-}
-rootProject.name = 'tools'
-dependencyResolutionManagement {
-    versionCatalogs {
-        libs {
-            version('junit', '5.10.0')
-            library('junit.jupiter', 'org.junit.jupiter', 'junit-jupiter').versionRef('junit')
-        }
-    }
+    id 'java-library'
 }
 
-include 'collection'
-include 'collection:core'
-findProject(':collection:core')?.name = 'core'
-include 'collection:st'
-findProject(':collection:st')?.name = 'static'
-include 'collection:bean'
-findProject(':collection:bean')?.name = 'bean'
+import extension.MultiJarExtension;
 
+extensions.create("multijar", MultiJarExtension, java, sourceSets, javaToolchains)
