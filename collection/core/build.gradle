@@ -19,10 +19,27 @@
 plugins {
     id 'tools-lib'
     id 'multi-jar'
+//    id 'cz.ad.gradle.plugin.jdk.MultiJdkPlugin'
 }
 
 group = 'cz.a-d.java.tools.collection.core'
 version = '1.0-SNAPSHOT'
+//
+//multijar {
+////    jdkArtifacts()
+////    features(8,11,17,21)
+////    features(8)
+//}
+
+//multiJar {
+//    targets {
+//        it = [
+//                {
+//                    targetPlatform = JavaLanguageVersion.of("8")
+//                }
+//        ]
+//    }
+//}
 
 publishing {
     publications {
@@ -34,14 +51,3 @@ publishing {
         }
     }
 }
-
-multijar {
-    jdkArtifacts(8)
-}
-
-//tasks.register('compileJdk8', JavaCompile) {
-//
-//    javaCompiler = javaToolchains.compilerFor {
-//        languageVersion = JavaLanguageVersion.of(8)
-//    }
-//}

@@ -17,7 +17,8 @@
  */
 
 plugins {
-    id 'java-library'
+    id 'multi-jar'
+//    id 'java-library'
     id 'signing'
     id 'maven-publish'
 }
@@ -44,11 +45,21 @@ java {
     }
 }
 
+multiJar {
+    target {
+        targetPlatform=(JavaLanguageVersion.of("8"))
+    }
+//    target {
+//        targetPlatform=(JavaLanguageVersion.of("11"))
+//    }
+}
+
 javadoc {
     if (JavaVersion.current().isJava9Compatible()) {
         options.addBooleanOption('html5', true)
     }
 }
+
 
 publishing {
     publications {

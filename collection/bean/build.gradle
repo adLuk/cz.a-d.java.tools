@@ -18,10 +18,18 @@
 
 plugins {
     id 'tools-lib'
+//    id 'multi-jar'
 }
 
 group = 'cz.a-d.java.tools.collection.bean'
 version = '1.0-SNAPSHOT'
+
+//multijar {
+////    jdkArtifacts()
+////    features(8,11,17,21)
+//    features(8)
+//}
+
 
 dependencies {
     implementation project(':collection:core')

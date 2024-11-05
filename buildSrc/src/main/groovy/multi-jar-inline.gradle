@@ -20,6 +20,7 @@ plugins {
     id 'java-library'
 }
 
-import extension.MultiJarExtension;
-
-extensions.create("multijar", MultiJarExtension, java, sourceSets, javaToolchains)
+//import extension.MultiJarExtension;
+//
+//
+//extensions.create("multijar", MultiJarExtension, java, sourceSets, javaToolchains)

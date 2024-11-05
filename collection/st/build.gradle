@@ -23,6 +23,12 @@ plugins {
 group = 'cz.a-d.java.tools.collection.st'
 version = '1.0-SNAPSHOT'
 
+//multijar {
+////    jdkArtifacts()
+//    features(8,11,17,21)
+//}
+
+
 dependencies {
     implementation project(':collection:core')
 }
