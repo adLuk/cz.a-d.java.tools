@@ -20,10 +20,11 @@ package cz.ad.gradle.plugin.jdk
 
 import org.gradle.api.Action
 import org.gradle.api.JavaVersion
+import org.gradle.api.NamedDomainObjectProvider
+import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.DependencySet
 import org.gradle.api.file.SourceDirectorySet
-import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.plugins.jvm.internal.JvmFeatureInternal
 import org.gradle.api.provider.Provider
@@ -32,7 +33,7 @@ import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.api.tasks.compile.JavaCompile
-import org.gradle.jvm.component.internal.DefaultJvmSoftwareComponent
+import org.gradle.jvm.component.internal.JvmSoftwareComponentInternal
 import org.gradle.jvm.toolchain.JavaCompiler
 import org.gradle.jvm.toolchain.JavaToolchainService
 import org.gradle.jvm.toolchain.JavaToolchainSpec
@@ -40,11 +41,9 @@ import org.gradle.util.internal.GUtil
 
 class MultiJdkExtension {
 
-    protected ProjectInternal projectInternal;
+    protected Project project;
 
     protected SourceSetContainer sourceSets;
-
-    protected DefaultJvmSoftwareComponent mainComponent;
 
     protected JavaPluginExtension javaPluginExtension;
 
@@ -56,12 +55,11 @@ class MultiJdkExtension {
 
 
     MultiJdkExtension(
-            ProjectInternal projectInternal,SourceSetContainer sourceSets,DefaultJvmSoftwareComponent mainComponent,
-                      JavaPluginExtension javaPluginExtension, JavaToolchainService toolchainService
+            Project project, SourceSetContainer sourceSets,
+            JavaPluginExtension javaPluginExtension, JavaToolchainService toolchainService
     ) {
-        this.projectInternal = projectInternal;
+        this.project = project;
         this.sourceSets = sourceSets;
-        this.mainComponent = mainComponent;
         this.javaPluginExtension = javaPluginExtension
         this.toolchainService = toolchainService
     }
@@ -88,58 +86,38 @@ class MultiJdkExtension {
     }
 
 
-    protected void configurePlatform(MultiJdkTargetPlatform target){
-        String name="jdk"+target.getTargetPlatform().asInt();
-        def mainSourceSet = mainComponent.mainFeature.getSourceSet();
+    protected void configurePlatform(MultiJdkTargetPlatform target) {
+        String name = "jdk" + target.getTargetPlatform().asInt();
+        Provider<JavaCompiler> compiler = toolchainService.compilerFor {
+            it.getLanguageVersion().set(target.targetPlatform)
+        }
+
+        def mainSourceSet = sourceSets.find {
+            SourceSet.isMain(it)
+        }
         SourceSet created = createSourceSet(name, sourceSets, mainSourceSet);
+        def dependenciesSource = project.configurations.findByName(mainSourceSet.compileClasspathConfigurationName);
+        def variantDependencies = project.configurations.findByName(created.compileClasspathConfigurationName);
+        variantDependencies.extendsFrom(dependenciesSource)
+
 
         JavaVersion javaVersion = JavaVersion.toVersion(target.targetPlatform.asInt());
         if (!javaVersion.isJava9Compatible()) {
             created.java.getFilter().exclude("**/module-info.java")
         }
 
-        Provider<JavaCompiler> compiler = toolchainService.compilerFor {
-            it.getLanguageVersion().set(target.targetPlatform)
-        }
-
-        projectInternal.tasks.named("compile" + GUtil.toCamelCase(name) + "Java", JavaCompile) {
-            //def depend = projectInternal.getDependencies();
+        project.tasks.named(created.getCompileJavaTaskName(), JavaCompile) {
             it.getJavaCompiler().set(compiler)
             it.setTargetCompatibility(target.getTargetPlatform().toString())
         }
 
-
         javaPluginExtension.registerFeature(name, {
             it.usingSourceSet(created)
-//            it.capability(projectInternal.getGroup().toString(), this.projectInternal.getName(), this.projectInternal.getVersion().toString())
+            it.capability(this.project.getGroup().toString(), this.project.getName(), this.project.getVersion().toString())
         })
-
-        projectInternal.tasks.named(name+ "Classes") {
-            JvmFeatureInternal mainFeature = mainComponent.getMainFeature();
-            JvmFeatureInternal newFeature = mainComponent.getFeatures().findByName(name)
-            configureDependencies(newFeature, mainFeature)
-        }
-
-
-//        def dependen =projectInternal.getDependencies();
-//        JvmFeatureInternal mainFeature = mainComponent.getMainFeature();
-//        def config = mainFeature.getImplementationConfiguration();
-//        def dependencies = config.dependencies;
-//        if(!dependencies.isEmpty()){
-//
-//        }
     }
 
-
-    @Override
-    public String toString() {
-        return "MultiJdkExtension{" +
-                "toolchains=" + toolchains +
-                ", targetPlatform=" + targetPlatforms +
-                '}';
-    }
-
-    protected SourceSet createSourceSet(String name, SourceSetContainer sourceSets, SourceSet mainSourceSet){
+    protected SourceSet createSourceSet(String name, SourceSetContainer sourceSets, SourceSet mainSourceSet) {
         return sourceSets.create(name, (Action<SourceSet>) {
             SourceDirectorySet source = mainSourceSet.getJava()
             it.getJava().source(source)
@@ -148,36 +126,4 @@ class MultiJdkExtension {
         });
     }
 
-    protected void configureDependencies(JvmFeatureInternal newFeature, JvmFeatureInternal mainTemplate) {
-        configureDependencies(newFeature.getJavadocElementsConfiguration(), mainTemplate.getJavadocElementsConfiguration())
-        configureDependencies(newFeature.getSourcesElementsConfiguration(), mainTemplate.getSourcesElementsConfiguration())
-        configureDependencies(newFeature.getImplementationConfiguration(), mainTemplate.getImplementationConfiguration())
-        configureDependencies(newFeature.getRuntimeOnlyConfiguration(), mainTemplate.getRuntimeOnlyConfiguration())
-        configureDependencies(newFeature.getCompileOnlyConfiguration(), mainTemplate.getCompileOnlyConfiguration())
-        configureDependencies(newFeature.getApiConfiguration(), mainTemplate.getApiConfiguration())
-        configureDependencies(newFeature.getCompileOnlyApiConfiguration(), mainTemplate.getCompileOnlyApiConfiguration())
-        configureDependencies(newFeature.getRuntimeClasspathConfiguration(), mainTemplate.getRuntimeClasspathConfiguration())
-        configureDependencies(newFeature.getCompileClasspathConfiguration(), mainTemplate.getCompileClasspathConfiguration())
-        configureDependencies(newFeature.getApiElementsConfiguration(), mainTemplate.getRuntimeElementsConfiguration())
-    }
-
-    protected void configureDependencies(Configuration newFeature, Configuration mainTemplate) {
-        if (mainTemplate != null && newFeature != null) {
-            DependencySet mainFeatureDep = mainTemplate.getDependencies()
-            if (mainFeatureDep != null && !mainFeatureDep.isEmpty()) {
-                DependencySet newFeatureDep = newFeature.getDependencies()
-                newFeatureDep.addAll(mainFeatureDep)
-            }
-        }
-    }
-
-    protected void configureJarTask(String featureName, SourceSet featureSourceSet) {
-        TaskProvider<Jar> jarTask = projectInternal.tasks.named(featureName + "Jar")
-        ; jarTask.configure {
-//            it.setDescription("Assemble jar archive with classes compiled by ${featureName}.")
-//            it.from(featureSourceSet.getOutput())
-            it.getArchiveClassifier().set(featureName)
-//            it.getArchiveExtension().set("jar")
-        }
-    }
 }

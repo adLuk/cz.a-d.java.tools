@@ -82,38 +82,10 @@ class MultiJdkPlugin implements Plugin<Project> {
     @Override
     void apply(Project project) {
         applyPlugins(project)
-        ProjectInternal projectInternal = (ProjectInternal)project;
         SourceSetContainer sourceSets = getSourceSets(project)
-        DefaultJvmSoftwareComponent mainComponent = getMainComponent(projectInternal)
         JavaPluginExtension extension = ((JavaPluginExtension)project.getExtensions().getByType(JavaPluginExtension.class))
         JavaToolchainService service = (JavaToolchainService)project.getExtensions().getByType(JavaToolchainService.class);
-
-        MultiJdkExtension multiJarExtension = createExtension(projectInternal, sourceSets, mainComponent, extension, service)
-
-//        SourceSet mainSourceSet = getMainSourceSet(mainComponent);
-
-
-
-//        Set<MultiJdkTargetPlatform> platforms = multiJarExtension.getTargetPlatforms();
-//        for(MultiJdkTargetPlatform platform: platforms){
-//            String name="jdk"+platform.targetPlatform.get().asInt();
-//
-//            SourceSet featureSourceSet = createSourceSet(name, sourceSets, mainSourceSet)
-//            JvmFeatureInternal newFeature = createFeature(name, projectInternal, featureSourceSet)
-//            addFeature(mainComponent,newFeature)
-//
-//            configurePublishing(project.getPlugins(), project.getExtensions(), newFeature.getSourceSet());
-////        Configuration defaultConfiguration = project.getConfigurations().getByName("default");
-////        defaultConfiguration.extendsFrom(new Configuration[]{newFeature.getRuntimeElementsConfiguration()})
-//
-//            DefaultArtifactPublicationSet publicationSet = (DefaultArtifactPublicationSet)project.getExtensions().getByType(DefaultArtifactPublicationSet.class);
-//            publicationSet.addCandidate((PublishArtifact)newFeature.getRuntimeElementsConfiguration().getArtifacts().iterator().next());
-//
-//            BuildOutputCleanupRegistry buildOutputCleanupRegistry = (BuildOutputCleanupRegistry)projectInternal.getServices().get(BuildOutputCleanupRegistry.class);
-//
-////        JavaPluginExtension javaExtension = ((JavaPluginExtension)project.getExtensions().getByType(JavaPluginExtension.class))
-//        }
-//
+        createExtension(project, sourceSets, extension, service)
 
     }
 
@@ -123,72 +95,15 @@ class MultiJdkPlugin implements Plugin<Project> {
     }
 
     protected MultiJdkExtension createExtension(
-            ProjectInternal project,SourceSetContainer sourceSets,DefaultJvmSoftwareComponent mainComponent,
+            Project project,SourceSetContainer sourceSets,
             JavaPluginExtension javaPluginExtension, JavaToolchainService service
     ){
-        project.getExtensions().create("multiJar",MultiJdkExtension.class,new Object[]{project, sourceSets, mainComponent, javaPluginExtension, service} )
+        return project.getExtensions().create("multiJar",MultiJdkExtension.class,new Object[]{project, sourceSets, javaPluginExtension, service} )
     }
 
-    protected DefaultJvmSoftwareComponent getMainComponent(ProjectInternal project){
-        return (DefaultJvmSoftwareComponent) project.getComponents().findByName(JAVA_COMPONENT_NAME);
-//        return project.getObjects().named(DefaultJvmSoftwareComponent.class, JAVA_COMPONENT_NAME)
-    }
 
     protected SourceSetContainer getSourceSets(Project project){
         return ((JavaPluginExtension)project.getExtensions().getByType(JavaPluginExtension.class)).getSourceSets();
     }
-
-    protected SourceSet getMainSourceSet(JvmSoftwareComponentInternal javaComponent){
-        return javaComponent.getMainFeature().getSourceSet()
-    }
-
-    protected SourceSet createSourceSet(String name,SourceSetContainer sourceSets,  SourceSet mainSourceSet){
-        return sourceSets.create(name, (Action<SourceSet>) {
-            SourceDirectorySet source = mainSourceSet.getJava()
-            it.getJava().source(source)
-            SourceDirectorySet resources = mainSourceSet.getResources()
-            it.getResources().source(resources)
-        });
-    }
-
-    protected JvmFeatureInternal createFeature(
-            String name, ProjectInternal project, SourceSet sourceSet
-    ){
-        name = validateFeatureName(name)
-        JvmFeatureInternal feature = new DefaultJvmFeature(name, sourceSet, Collections.emptySet(), project, false, false);
-        feature.withSourceElements();
-        return feature;
-    }
-
-    protected void addFeature(DefaultJvmSoftwareComponent target, JvmFeatureInternal feature){
-        target.getFeatures().add(feature);
-        target.addVariantsFromConfiguration(feature.getApiElementsConfiguration(), new JavaConfigurationVariantMapping("compile", false, feature.getCompileClasspathConfiguration()));
-        target.addVariantsFromConfiguration(feature.getRuntimeElementsConfiguration(), new JavaConfigurationVariantMapping("runtime", false, feature.getRuntimeClasspathConfiguration()));
-    }
-
-    protected String validateFeatureName(String name){
-        if (!VALID_FEATURE_NAME.matcher(name).matches()) {
-            throw new InvalidUserDataException("Invalid feature name '" + name + "'. Must match " + VALID_FEATURE_NAME.pattern());
-        } else {
-            return name;
-        }
-    }
-
-    protected void configurePublishing(PluginContainer plugins, ExtensionContainer extensions, SourceSet sourceSet){
-        plugins.withType(PublishingPlugin.class, (plugin) -> {
-            PublishingExtension publishing = (PublishingExtension)extensions.getByType(PublishingExtension.class);
-            publishing.getPublications().withType(IvyPublication.class, (publication) -> {
-                VersionMappingStrategyInternal strategy = ((PublicationInternal)publication).getVersionMappingStrategy();
-                strategy.defaultResolutionConfiguration("java-api", sourceSet.getCompileClasspathConfigurationName());
-                strategy.defaultResolutionConfiguration("java-runtime", sourceSet.getRuntimeClasspathConfigurationName());
-            });
-            publishing.getPublications().withType(MavenPublication.class, (publication) -> {
-                VersionMappingStrategyInternal strategy = ((PublicationInternal)publication).getVersionMappingStrategy();
-                strategy.defaultResolutionConfiguration("java-api", sourceSet.getCompileClasspathConfigurationName());
-                strategy.defaultResolutionConfiguration("java-runtime", sourceSet.getRuntimeClasspathConfigurationName());
-            });
-        });
-    }
-
 
 }
