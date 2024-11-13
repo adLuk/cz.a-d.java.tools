@@ -49,9 +49,9 @@ multiJar {
     target {
         targetPlatform=(JavaLanguageVersion.of("8"))
     }
-//    target {
-//        targetPlatform=(JavaLanguageVersion.of("11"))
-//    }
+    target {
+        targetPlatform=(JavaLanguageVersion.of("11"))
+    }
 }
 
 javadoc {

@@ -20,24 +20,16 @@ package cz.ad.gradle.plugin.jdk
 
 import org.gradle.api.Action
 import org.gradle.api.JavaVersion
-import org.gradle.api.NamedDomainObjectProvider
 import org.gradle.api.Project
-import org.gradle.api.artifacts.Configuration
-import org.gradle.api.artifacts.DependencySet
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.plugins.JavaPluginExtension
-import org.gradle.api.plugins.jvm.internal.JvmFeatureInternal
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.SourceSetContainer
-import org.gradle.api.tasks.TaskProvider
-import org.gradle.api.tasks.bundling.Jar
 import org.gradle.api.tasks.compile.JavaCompile
-import org.gradle.jvm.component.internal.JvmSoftwareComponentInternal
 import org.gradle.jvm.toolchain.JavaCompiler
 import org.gradle.jvm.toolchain.JavaToolchainService
 import org.gradle.jvm.toolchain.JavaToolchainSpec
-import org.gradle.util.internal.GUtil
 
 class MultiJdkExtension {
 
@@ -97,9 +89,9 @@ class MultiJdkExtension {
         }
         SourceSet created = createSourceSet(name, sourceSets, mainSourceSet);
         def dependenciesSource = project.configurations.findByName(mainSourceSet.compileClasspathConfigurationName);
-        def variantDependencies = project.configurations.findByName(created.compileClasspathConfigurationName);
-        variantDependencies.extendsFrom(dependenciesSource)
-
+        project.configurations.named(created.compileClasspathConfigurationName).configure((configuration) -> {
+            configuration.extendsFrom(dependenciesSource)
+        });
 
         JavaVersion javaVersion = JavaVersion.toVersion(target.targetPlatform.asInt());
         if (!javaVersion.isJava9Compatible()) {
@@ -115,6 +107,14 @@ class MultiJdkExtension {
             it.usingSourceSet(created)
             it.capability(this.project.getGroup().toString(), this.project.getName(), this.project.getVersion().toString())
         })
+
+        if (project.tasks.getNames().contains("assemble")) {
+            // jar task needs to be located by name otherwise configuration of assembly task fail.
+            def jarTask = project.tasks.findByName(created.getJarTaskName())
+            project.tasks.named("assemble").configure((task) -> {
+                task.dependsOn.add(jarTask)
+            });
+        }
     }
 
     protected SourceSet createSourceSet(String name, SourceSetContainer sourceSets, SourceSet mainSourceSet) {
