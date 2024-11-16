@@ -18,92 +18,64 @@
 
 package cz.ad.gradle.plugin.jdk
 
-import org.gradle.api.Action
-import org.gradle.api.InvalidUserDataException
-import org.gradle.api.NamedDomainObjectProvider
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.artifacts.Configuration
-import org.gradle.api.artifacts.PublishArtifact
-import org.gradle.api.file.SourceDirectorySet
-import org.gradle.api.internal.plugins.DefaultArtifactPublicationSet
-import org.gradle.api.internal.project.ProjectInternal
-import org.gradle.api.model.ObjectFactory
-import org.gradle.api.plugins.ExtensionContainer
-import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.plugins.JavaLibraryPlugin
 import org.gradle.api.plugins.JavaPluginExtension
-import org.gradle.api.plugins.PluginContainer
-import org.gradle.api.plugins.internal.DefaultJavaPluginConvention
-import org.gradle.api.plugins.internal.DefaultJavaPluginExtension
-import org.gradle.api.plugins.internal.JavaConfigurationVariantMapping
-import org.gradle.api.plugins.internal.NaggingJavaPluginConvention
-import org.gradle.api.plugins.jvm.internal.DefaultJvmFeature
-import org.gradle.api.plugins.jvm.internal.JvmFeatureInternal
-import org.gradle.api.plugins.jvm.internal.JvmPluginServices
-import org.gradle.api.publish.PublishingExtension
-import org.gradle.api.publish.internal.PublicationInternal
-import org.gradle.api.publish.internal.versionmapping.VersionMappingStrategyInternal
-import org.gradle.api.publish.ivy.IvyPublication
-import org.gradle.api.publish.maven.MavenPublication
-import org.gradle.api.publish.plugins.PublishingPlugin
-import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.SourceSetContainer
-import org.gradle.internal.deprecation.DeprecationLogger
-import org.gradle.internal.execution.BuildOutputCleanupRegistry
-import org.gradle.jvm.component.internal.DefaultJvmSoftwareComponent
-import org.gradle.jvm.component.internal.JvmSoftwareComponentInternal
 import org.gradle.jvm.toolchain.JavaToolchainService
-import org.gradle.jvm.toolchain.internal.DefaultToolchainSpec
 
-import javax.inject.Inject
-import java.util.regex.Pattern
-
+/**
+ * Multiple JDK release version plugin for allowing simple configuration based release of java code compiled by multiple
+ * different version of java compiler and producing selected target versions of byte code.
+ */
 class MultiJdkPlugin implements Plugin<Project> {
-
-    protected static final Pattern VALID_FEATURE_NAME = Pattern.compile("[a-zA-Z0-9]+");
-
-    protected static final String JAVA_COMPONENT_NAME = "java";
-
-    protected static final String JAVA_COMPONENT_MAIN_SOURCE_SET_NAME="main";
-
-    protected ObjectFactory objectFactory;
-
-    private JvmPluginServices jvmPluginServices;
-    private boolean javaClasspathPackaging;
-
-    @Inject
-    public MultiJdkPlugin(ObjectFactory objectFactory, JvmPluginServices jvmPluginServices) {
-        this.objectFactory = objectFactory;
-        this.javaClasspathPackaging = Boolean.getBoolean("org.gradle.java.compile-classpath-packaging");
-        this.jvmPluginServices = jvmPluginServices;
-    }
-
+    /**
+     * Apply plugin to project by ensuring java-lib plugin was applied and registering extension where all logic of
+     * plugin is implemented.
+     * @param project instance where plugin is applied.
+     */
     @Override
     void apply(Project project) {
         applyPlugins(project)
         SourceSetContainer sourceSets = getSourceSets(project)
-        JavaPluginExtension extension = ((JavaPluginExtension)project.getExtensions().getByType(JavaPluginExtension.class))
-        JavaToolchainService service = (JavaToolchainService)project.getExtensions().getByType(JavaToolchainService.class);
+        JavaPluginExtension extension = ((JavaPluginExtension) project.getExtensions().getByType(JavaPluginExtension.class))
+        JavaToolchainService service = (JavaToolchainService) project.getExtensions().getByType(JavaToolchainService.class);
         createExtension(project, sourceSets, extension, service)
-
     }
 
-
-    protected void applyPlugins(Project project){
+    /**
+     * Apply java library plugin to project.
+     * @param project project instance where plugin is applied.
+     */
+    protected void applyPlugins(Project project) {
         project.getPluginManager().apply(JavaLibraryPlugin.class);
     }
 
-    protected MultiJdkExtension createExtension(
-            Project project,SourceSetContainer sourceSets,
+    /**
+     * Create new instance of multi jdk plugin extension and register it into project.
+     * @param project project project instance where plugin is applied.
+     * @param sourceSets used to create jdk specific sourceSets
+     * @param javaPluginExtension used to register new JDK version specific feature.
+     * @param service used to obtain/ install requested version of JDK toolchain
+     * @return
+     */
+    protected void createExtension(
+            Project project, SourceSetContainer sourceSets,
             JavaPluginExtension javaPluginExtension, JavaToolchainService service
-    ){
-        return project.getExtensions().create("multiJar",MultiJdkExtension.class,new Object[]{project, sourceSets, javaPluginExtension, service} )
+    ) {
+        project.getExtensions()
+                .create("multiJar", MultiJdkExtension.class,
+                        new Object[]{project, sourceSets, javaPluginExtension, service})
     }
 
-
-    protected SourceSetContainer getSourceSets(Project project){
-        return ((JavaPluginExtension)project.getExtensions().getByType(JavaPluginExtension.class)).getSourceSets();
+    /**
+     * Provide sourceSet container defined in project.
+     * @param project project project project instance where plugin is applied and sourSet container needs to be located
+     * @return container with sourceSets defined in project java plugin extension.
+     */
+    protected SourceSetContainer getSourceSets(Project project) {
+        return ((JavaPluginExtension) project.getExtensions().getByType(JavaPluginExtension.class)).getSourceSets();
     }
 
 }

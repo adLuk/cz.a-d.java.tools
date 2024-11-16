@@ -18,7 +18,6 @@
 
 plugins {
     id 'multi-jar'
-//    id 'java-library'
     id 'signing'
     id 'maven-publish'
 }
@@ -46,11 +45,24 @@ java {
 }
 
 multiJar {
-    target {
-        targetPlatform=(JavaLanguageVersion.of("8"))
+    toolchains {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of("8"))
+        }
     }
-    target {
-        targetPlatform=(JavaLanguageVersion.of("11"))
+    targets {
+        target {
+            targetPlatform = (JavaLanguageVersion.of("8"))
+        }
+        target {
+            targetPlatform = (JavaLanguageVersion.of("11"))
+        }
+        target {
+            targetPlatform = (JavaLanguageVersion.of("17"))
+        }
+        target {
+            targetPlatform = (JavaLanguageVersion.of("21"))
+        }
     }
 }
 

@@ -531,4 +531,5 @@ public class DefaultBeanCollectionUtils implements BeanCollectionAddUtils {
                 "collectionUtils=" + collectionUtils +
                 '}';
     }
+
 }

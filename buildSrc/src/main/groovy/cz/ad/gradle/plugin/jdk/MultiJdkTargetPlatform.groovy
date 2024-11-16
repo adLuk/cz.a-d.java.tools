@@ -20,13 +20,22 @@ package cz.ad.gradle.plugin.jdk
 
 import org.gradle.jvm.toolchain.JavaLanguageVersion
 
+/**
+ * Bean with ability to define target JDK platform to be produced by compile process.
+ */
 class MultiJdkTargetPlatform {
-
+    /**
+     * Version of JDK witch should be used for output of compile process
+     */
     protected JavaLanguageVersion targetPlatform
-
-    protected boolean withSource;
-
-    protected boolean withJavaDoc;
+    /**
+     * Flag allowing to add java source jar for specific target. (Currently not supported)
+     */
+    protected Boolean withSource;
+    /**
+     * Flag allowing to add java doc jar for specific target. (Currently not supported)
+     */
+    protected Boolean withJavaDoc;
 
     JavaLanguageVersion getTargetPlatform() {
         return targetPlatform
@@ -36,19 +45,19 @@ class MultiJdkTargetPlatform {
         this.targetPlatform = targetPlatform
     }
 
-    boolean getWithSource() {
+    Boolean getWithSource() {
         return withSource
     }
 
-    void setWithSource(boolean withSource) {
+    void setWithSource(Boolean withSource) {
         this.withSource = withSource
     }
 
-    boolean getWithJavaDoc() {
+    Boolean getWithJavaDoc() {
         return withJavaDoc
     }
 
-    void setWithJavaDoc(boolean withJavaDoc) {
+    void setWithJavaDoc(Boolean withJavaDoc) {
         this.withJavaDoc = withJavaDoc
     }
 
